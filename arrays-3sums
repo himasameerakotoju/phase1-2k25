@@ -1,0 +1,28 @@
+class Solution:
+    def threeSum(self, nums: List[int]) -> List[List[int]]:
+        nums.sort()
+        result = []
+        N = len(nums)
+
+        idx = 0
+        while idx < N:
+            complement = nums[idx]
+            l, r = idx+1, N-1
+
+            while l < r:
+                left = nums[l]
+                right = nums[r]
+                if left + right + complement == 0:
+                    result.append([complement, left, right])
+                    while l < len(nums) and r >= 0 and nums[l] == left and nums[r] == right:
+                        l += 1
+                        r -= 1
+                elif left + right + complement > 0:
+                    r -= 1
+                else:
+                    l += 1
+            
+            while idx < len(nums) and nums[idx] == complement:
+                idx += 1
+        
+        return result
