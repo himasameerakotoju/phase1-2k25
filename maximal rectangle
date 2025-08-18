@@ -1,0 +1,52 @@
+class Solution:
+    # this is direct solution from problem 84
+    def largestRectangleArea(self, heights: List[int]) -> int:
+        max_area = 0
+        # Stack stores [index, height] pairs in increasing height order
+        stack = []
+
+        for current_index, current_height in enumerate(heights):
+            # This will be the leftmost index where current_height can extend
+            rectangle_start = current_index
+            
+            # Pop all bars taller than current height and calculate their max rectangles
+            while stack and stack[-1][1] > current_height:
+                bar_index, bar_height = stack.pop()
+                # Rectangle width: from bar_index to current_index (exclusive)
+                rectangle_area = bar_height * (current_index - bar_index)
+                max_area = max(max_area, rectangle_area)
+                # Current height can extend back to where the popped bar started
+                rectangle_start = bar_index
+            
+            stack.append([rectangle_start, current_height])
+
+        # Process remaining bars in stack (they extend to the end)
+        for bar_index, bar_height in stack:
+            rectangle_area = bar_height * (len(heights) - bar_index)
+            max_area = max(max_area, rectangle_area)
+        
+        return max_area
+
+    def maximalRectangle(self, matrix: List[List[str]]) -> int:
+        if not matrix: 
+            return 0
+
+        max_rectangle_area = 0
+        # heights[j] = number of consecutive '1's ending at current row, column j
+        heights = [0] * len(matrix[0])
+        
+        for row_index in range(len(matrix)):
+            # Update heights for current row
+            for col_index in range(len(matrix[0])):
+                if matrix[row_index][col_index] == "1":
+                    # Extend the height from previous row
+                    heights[col_index] += 1
+                else:
+                    # Reset height to 0 (no consecutive '1's)
+                    heights[col_index] = 0
+            
+            # Find largest rectangle in current histogram
+            current_max_area = self.largestRectangleArea(heights)
+            max_rectangle_area = max(max_rectangle_area, current_max_area)
+            
+        return max_rectangle_area
