@@ -1,0 +1,11 @@
+
+class Solution:
+    def grayCode(self, n: int):
+        res = []
+        N= (2**n)
+        i=0
+        while i<N:
+            res.append(i^(i>>1))
+            i+=1
+        return res
+# print(Solution().grayCode(4))
