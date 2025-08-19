@@ -1,0 +1,25 @@
+class Solution:
+    def numDecodings(self, s: str) -> int:
+        countMap = {}
+
+        def countWays(index):
+            if index in countMap:
+                return countMap[index]
+            ways = 0
+            
+            if index < len(s):
+                a1 = int(s[index])
+                if 1 <= a1 <= 26:
+                    ways += countWays(index + 1)
+                
+                if a1 != 0 and index + 1 < len(s):
+                    a2 = int(s[index:index + 2])
+                    if 1 <= a2 <= 26:
+                        ways += countWays(index + 2)
+                countMap[index] = ways
+                return ways
+            else:
+                return 1
+
+        return countWays(0)
+
