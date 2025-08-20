@@ -1,0 +1,42 @@
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+class Solution:
+    def generateTrees(self, n: int) -> List[Optional[TreeNode]]:
+        self.dp = {}
+        return self.generateRecursive(1, n)
+    
+
+    def generateRecursive(self, start, end):
+        cacheKey = f"{start}.{end}"
+        if cacheKey in self.dp:
+            return self.dp[cacheKey]
+
+        diff = end - start
+        if diff == 0: # 1 node
+            return [TreeNode(start)]
+        if diff == 1: # 2 nodes
+            return [TreeNode(val=start, right=TreeNode(end)), TreeNode(val=end, left=TreeNode(start))]
+
+        result = []
+        for root in range(start, end+1):
+            left = [None] if root == start else self.generateRecursive(start, root - 1)
+            right = [None] if root == end else self.generateRecursive(root + 1, end)
+            
+            # Combine results of left and right
+            # We must be able to go through left and right even though
+            # there are no nodes, hence the singe None element.
+            # An empty array will prevent the combination from happening
+            for l in left:
+                for r in right:
+                    center = TreeNode(root)
+                    if l is not None:
+                        center.left = l
+                    if r is not None:
+                        center.right = r
+                    result.append(center)
+        self.dp[cacheKey] = result
+        return result
